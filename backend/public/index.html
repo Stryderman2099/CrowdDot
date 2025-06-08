@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CrowdDot</title>
+  <link rel="icon" href="crowddotlogo.png" type="image/png" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-start;
+      min-height: 100vh;
+      margin: 0;
+      background: linear-gradient(135deg, #222222, #000000);
+    }
+
+    #gameContainer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      flex: 1;
+      padding-top: 20px;
+      margin-left: -60px;
+    }
+
+    canvas {
+      border: 3px solid #333;
+      background: #ffffffa9;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      margin-top: 20px;
+    }
+
+    /* Smooth transition for the game canvas */
+    #gameCanvas {
+      transition: transform 0.3s ease; /* Smooth transition for scaling */
+    }
+
+    /* Hover effect for the game canvas */
+    #gameCanvas:hover {
+      transform: scale(1.03); /* Increase size by 10% */
+    }
+
+    #chatContainer {
+      width: 300px;
+      height: 900px;
+      margin-top: 20px;
+      margin-right: 20px;
+      background: #fff;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      /* Add these lines: */
+      position: relative;
+    }
+
+    #chatHeader {
+      background: #333;
+      color: #fff;
+      padding: 10px;
+      text-align: center;
+      font-weight: bold;
+      border-bottom: 2px solid #ccc;
+    }
+
+    #chat {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    #chat div {
+      margin-bottom: 10px;
+      padding: 5px 10px;
+      background: #f1f1f1;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    #chat div:nth-child(odd) {
+      background: #e0f7fa;
+    }
+
+    #usernameInput {
+      padding: 10px;
+      font-size: 16px;
+      border: 2px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      margin-bottom: 10px;
+      width: 80%;
+      max-width: 300px;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+
+    #usernameInput:focus {
+      border-color: #74ebd5;
+    }
+
+    #setUsernameButton {
+      padding: 10px 20px;
+      font-size: 16px;
+      color: #fff;
+      background: linear-gradient(135deg, #eb74e1, #acb6e5);
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    #setUsernameButton:hover {
+      background: linear-gradient(135deg, #e424d4, #4327c0);
+      transform: scale(1.05);
+    }
+
+    #setUsernameButton:active {
+      transform: scale(0.95);
+    }
+
+    h1 {
+      font-size: 3rem;
+      font-weight: bold;
+      text-align: center;
+      background: linear-gradient(135deg, #7573fa, #ff758c, #ff0037);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: glow 5s infinite alternate, slideIn 1.5s ease-out;
+      text-shadow: 0 0 15px rgba(255, 120, 150, 0.8), 0 0 30px rgba(255, 80, 120, 0.6);
+      margin: 10px 0;
+    }
+
+    @keyframes glow {
+      from {
+        text-shadow: 0 0 15px rgba(255, 120, 150, 0.8), 0 0 30px rgba(209, 0, 49, 0.6);
+      }
+      to {
+        text-shadow: 0 0 25px rgb(140, 102, 209), 0 0 40px rgba(38, 86, 218, 0.8)
+      }
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateY(-100px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    #instructionsContainer {
+      width: 400px;
+      height: 90%;
+      margin-left: 20px;
+      background: #fff;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      overflow: hidden;
+      margin-bottom: 50px;
+    }
+
+    #instructionsContainer h2 {
+      text-align: center;
+      color: #333;
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+
+    #instructionsContainer ul {
+      list-style-type: none;
+      padding: 0;
+      font-size: 1rem;
+      line-height: 1.5;
+      color: #555;
+    }
+
+    #instructionsContainer ul li {
+      margin-bottom: 10px;
+      padding: 5px 10px;
+      background: #f9f9f9;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    #instructionsContainer ul li:nth-child(odd) {
+      background: #e8f5e9;
+    }
+
+    /* Responsive design for smaller screens */
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      #gameContainer, #chatContainer, #instructionsContainer {
+        width: 90%;
+        margin: 10px 0;
+      }
+
+      canvas {
+        width: 100%;
+        height: auto;
+      }
+    }
+
+    /* Footer styling */
+    footer {
+      width: 100%;
+      text-align: center;
+      padding: 15px;
+      background: linear-gradient(135deg, #4b64d681, #333333be);
+      color: #fff;
+      font-size: 14px;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    footer a {
+      color: #1da0f22f;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    footer p {
+      margin: 5px 0;
+    }
+
+    h1:first-of-type {
+      font-size: 3rem;
+      font-weight: bold;
+      text-align: center;
+      background: linear-gradient(135deg, #ff0037, #ff758c, #7573fa); /* Reversed gradient */
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: glow 5s infinite alternate, slideIn 1.5s ease-out;
+      text-shadow: 0 0 15px rgba(255, 120, 150, 0.8), 0 0 30px rgba(255, 80, 120, 0.6);
+      margin: 10px 0;
+    }
+
+    h1:nth-of-type(2) {
+      font-size: 1.5rem; /* Smaller font size */
+      font-weight: normal;
+      text-align: center;
+      color: #fff;
+      margin: 5px 0;
+    }
+
+    .rotating-border {
+      display: inline-block;
+      margin-top: 20px;
+      border-radius: 50px;
+      position: static;
+      padding: 0;
+      margin-bottom: 20px; 
+    }
+
+    .rotating-border::before {
+      content: none;
+    }
+
+    .learn-more-btn {
+      position: relative;
+      z-index: 1;
+      padding: 12px 32px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #fff;
+      background: #222;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(76, 110, 245, 0.15);
+      transition: background 0.3s, transform 0.2s, box-shadow 0.2s;
+      letter-spacing: 1px;
+      overflow: hidden;
+    }
+
+    .learn-more-btn:hover {
+      background: linear-gradient(135deg, #4327c0, #e424d4);
+      transform: scale(1.07);
+      box-shadow: 0 6px 18px rgba(76, 110, 245, 0.25);
+    }
+
+    .learn-more-btn:active {
+      transform: scale(0.97);
+    }
+
+    /* Modal styles */
+    #learnMoreModal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(30, 20, 60, 0.55); /* darker, more transparent overlay */
+      backdrop-filter: blur(6px); /* subtle blur for glass effect */
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s;
+    }
+
+    .modal-content {
+      background: rgba(255, 255, 255, 0.82); /* semi-transparent white */
+      border-radius: 18px;
+      padding: 36px 44px 28px 44px;
+      box-shadow: 0 8px 40px 0 rgba(60, 40, 120, 0.25), 0 1.5px 8px 0 rgba(0,0,0,0.10);
+      position: relative;
+      max-width: 440px;
+      width: 90%;
+      text-align: center;
+      border: 2px solid #e424d4;
+      animation: modalPopIn 0.35s cubic-bezier(.68,-0.55,.27,1.55);
+      font-size: 0.95rem;
+    }
+
+    @keyframes modalPopIn {
+      0% { transform: scale(0.8) translateY(40px); opacity: 0; }
+      100% { transform: scale(1) translateY(0); opacity: 1; }
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 14px;
+      right: 22px;
+      font-size: 2.2rem;
+      color: #e424d4;
+      cursor: pointer;
+      font-weight: bold;
+      background: none;
+      border: none;
+      transition: color 0.2s, transform 0.2s;
+      z-index: 10;
+    }
+
+    .close-modal:hover,
+    .close-modal:focus {
+      color: #4327c0;
+      transform: scale(1.2) rotate(8deg);
+    }
+
+    .modal-content h2 {
+      margin-top: 0;
+      font-size: 2rem;
+      color: #4327c0;
+      background: linear-gradient(90deg, #e424d4 30%, #4327c0 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 2px 12px rgba(228,36,212,0.10);
+    }
+
+    .modal-content p {
+      color: #333;
+      font-size: 1.1rem;
+      margin: 18px 0 0 0;
+      line-height: 1.7;
+      text-shadow: 0 1px 6px rgba(255,255,255,0.12);
+    }
+
+    #copyCAWrapper {
+      position: absolute;
+      left: 50px; /* Adjust as needed for spacing from the edge */
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 100;
+    }
+    #copyCAContainer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin: 28px 0 18px 0;
+      padding: 14px 28px;
+      background: rgba(40, 40, 60, 0.55);
+      border-radius: 22px;
+      box-shadow: 0 8px 32px 0 rgba(76,110,245,0.18), 0 2px 12px 0 rgba(228,36,212,0.13);
+      backdrop-filter: blur(8px);
+      border: 1.5px solid rgba(108,99,255,0.18);
+      font-size: 1.13rem;
+      font-family: 'Fira Mono', 'Consolas', monospace;
+      transition: box-shadow 0.2s, background 0.2s;
+    }
+    #copyCAContainer:hover {
+      box-shadow: 0 12px 36px 0 rgba(108,99,255,0.22), 0 4px 18px 0 rgba(228,36,212,0.18);
+      background: rgba(60, 60, 90, 0.72);
+    }
+    #copyCAButton {
+      background: linear-gradient(135deg, #6c63ff 60%, #9900ff 100%);
+      border: none;
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: #000000;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(76, 110, 245, 0.10);
+      transition: background 0.2s, transform 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #copyCAButton:hover {
+      background: linear-gradient(135deg, #e424d4 10%, #6c63ff 90%);
+      transform: scale(1.08);
+    }
+    #caText {
+      font-family: 'Fira Mono', 'Consolas', monospace;
+      background: linear-gradient(90deg, #6c63ff 10%, #e424d4 90%);
+      color: #000000;
+      padding: 7px 18px;
+      border-radius: 7px;
+      font-size: 1.08rem;
+      letter-spacing: 0.03em;
+      user-select: all;
+      box-shadow: 0 1px 4px rgba(76, 110, 245, 0.08);
+      transition: background 0.2s;
+      border: 1.5px solid #fff2;
+      text-shadow: 0 1px 6px #0008;
+    }
+    #copyCAFeedback {
+      margin-left: 10px;
+      color: #27ae60;
+      font-size: 1rem;
+      font-weight: bold;
+      display: none;
+      transition: opacity 0.2s;
+      letter-spacing: 0.04em;
+      text-shadow: 0 1px 6px #fff7;
+    }
+    @media (max-width: 900px) {
+      #copyCAContainer {
+        max-width: 98vw;
+        padding: 10px 4vw;
+        font-size: 1rem;
+      }
+      #caText {
+        font-size: 0.98rem;
+        padding: 6px 8px;
+      }
+    }
+    @media (max-width: 600px) {
+      #copyCAContainer {
+        flex-direction: column;
+        gap: 8px;
+        padding: 10px 2vw;
+      }
+      #copyCAButton {
+        margin-right: 0;
+      }
+      #copyCAFeedback {
+        margin-left: 0;
+      }
+    }
+
+    /* Notification Popup styles */
+    #notificationPopup {
+      position: fixed;
+      top: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      min-width: 320px;
+      max-width: 90vw;
+      padding: 18px 36px;
+      border-radius: 18px;
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: #fff;
+      z-index: 9999;
+      box-shadow: 0 6px 32px rgba(0,0,0,0.18), 0 1.5px 8px rgba(0,0,0,0.10);
+      text-align: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s, background 0.4s, box-shadow 0.3s;
+      letter-spacing: 0.02em;
+    }
+    #notificationPopup.show {
+      opacity: 1;
+      pointer-events: auto;
+      animation: popupBounce 0.7s cubic-bezier(.68,-0.55,.27,1.55);
+    }
+    @keyframes popupBounce {
+      0% { transform: translateX(-50%) scale(0.8); }
+      60% { transform: translateX(-50%) scale(1.08);}
+      100% { transform: translateX(-50%) scale(1);}
+    }
+
+    /* Dev Holdings Progress Bar */
+    #devHoldingsBarContainer {
+      margin: 80px 0;
+      width: 100%;
+      max-width: 400px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      color: #222;
+      margin-left: 20px;
+    }
+    #devHoldingsBar {
+      width: 100%;
+      height: 20px;
+      border-radius: 10px;
+      background: #eee;
+      box-shadow: 0 2px 8px #0001;
+      display: flex;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+    #devHoldingsRemaining {
+      height: 100%;
+      background: linear-gradient(90deg,#43e97b,#38f9d7);
+      transition: width 0.5s;
+    }
+    #devHoldingsLocked {
+      height: 100%;
+      background: linear-gradient(90deg,#4e54c8,#8f94fb);
+      transition: width 0.5s;
+    }
+    #devHoldingsSold {
+      height: 100%;
+      background: linear-gradient(90deg,#ff5858,#f857a6);
+      transition: width 0.5s;
+    }
+    #devHoldingsLabels {
+      margin-top: 4px;
+      font-size: 0.85rem;
+      color: #222;
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+    }
+    #devHoldingsMainLabel {
+      font-weight: bold;
+      font-size: 1.25rem;
+      letter-spacing: 0.04em;
+      background: linear-gradient(90deg, #e424d4 0%, #4327c0 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 2px 8px rgba(255, 255, 255, 0.274), 0 1px 2px #0002;
+      margin-bottom: 10px;
+      display: block;
+      text-align: center;
+    }
+    #devHoldingsLabels {
+      margin-top: 6px;
+      font-size: 1.05rem;
+      color: #222;
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      font-family: 'Fira Mono', 'Consolas', monospace;
+      text-shadow: 0 1px 6px #fff7, 0 1px 2px #0002;
+    }
+    #devHoldingsRemainingLabel {
+      color: #1abc9c;
+      font-weight: bold;
+      text-shadow: 0 1px 6px #fff7, 0 1px 2px #0002;
+    }
+    #devHoldingsLockedLabel {
+      color: #4e54c8;
+      font-weight: bold;
+      text-shadow: 0 1px 6px #fff7, 0 1px 2px #0002;
+    }
+    #devHoldingsSoldLabel {
+      color: #ff5858;
+      font-weight: bold;
+      text-shadow: 0 1px 6px #fff7, 0 1px 2px #0002;
+    }
+
+  </style>
+</head>
+<body>
+  <!-- Dev Holdings Progress Bar -->
+<div id="devHoldingsBarContainer">
+  <label for="devHoldingsBar" id="devHoldingsMainLabel">
+    Dev Holdings
+  </label>
+  <div id="devHoldingsBar" style="width:320px; height:32px; border-radius:16px; background:#eee; box-shadow:0 2px 8px #0001; display:flex; overflow:hidden;">
+    <div id="devHoldingsRemaining" style="height:100%; background:linear-gradient(90deg,#43e97b,#38f9d7); transition:width 0.5s;"></div>
+    <div id="devHoldingsLocked" style="height:100%; background:linear-gradient(90deg,#4e54c8,#8f94fb); transition:width 0.5s;"></div>
+    <div id="devHoldingsSold" style="height:100%; background:linear-gradient(90deg,#ff5858,#f857a6); transition:width 0.5s;"></div>
+  </div>
+  <div id="devHoldingsLabels">
+    <span id="devHoldingsRemainingLabel">Remaining: 100%</span> |
+    <span id="devHoldingsLockedLabel">Locked: 0%</span> |
+    <span id="devHoldingsSoldLabel">Sold: 0%</span>
+  </div>
+</div>
+
+  <!-- Copy CA Button Start -->
+  <div id="copyCAWrapper">
+    <div id="copyCAContainer">
+      <button id="copyCAButton" title="Copy Contract Address">
+        <svg width="22" height="22" viewBox="0 0 20 20" fill="none" style="vertical-align: middle;">
+          <rect x="4" y="4" width="12" height="12" rx="3" fill="#fff" stroke="#6c63ff" stroke-width="2"/>
+          <rect x="7" y="7" width="9" height="9" rx="2" fill="#6c63ff" stroke="#fff" stroke-width="1.5"/>
+        </svg>
+      </button>
+      <span id="caText">CA Loading...</span>
+      <span id="copyCAFeedback">Copied!</span>
+    </div>
+  </div>
+  <!-- Copy CA Button End -->
+  <div id="gameContainer">
+    <h1>CrowdDot</h1>
+    <h1>The Solana Social Experiment.</h1>
+    <canvas id="gameCanvas" width="500" height="500"></canvas>
+    <div class="rotating-border">
+      <button class="learn-more-btn" id="openLearnMoreBtn">Learn More</button>
+    </div>
+    <div id="instructionsContainer">
+      <h2>How to Play</h2>
+      <ul>
+        <li>Enter your username to join the game.</li>
+        <li>Use <strong>Arrow Keys</strong> or <strong>WASD</strong> to move the blue square.</li>
+        <li>Reach the <span style="color: green; font-weight: bold;">green circle</span> to lock <span style="color: green; font-weight: bold;">10% of dev tokens</span> and move onto next level!</li>
+        <li>Be careful though, if you hit a red wall you will be reset to the beginning and <span style="color: rgb(255, 0, 0); font-weight: bold;">5% dev tokens will be sold!</span></li>
+      </ul>
+    </div>
+
+    
+  </div>
+  
+  <div id="chatContainer">
+    <div id="chatHeader">Active Players: 1</div>
+    <div id="chat"></div>
+  </div>
+
+  <!-- Modal Structure -->
+  <div id="learnMoreModal" style="display:none;">
+    <div class="modal-content">
+      <span class="close-modal" id="closeModalBtn">&times;</span>
+      <h2>About CrowdDot</h2>
+      <p style="font-size:1.13rem; margin-bottom:18px;">
+        <strong>CrowdDot</strong> is a <span style="color:#e424d4;font-weight:bold;">crypto community game</span> where every player moves a <span style="color:#4e54c8;font-weight:bold;">shared blue “dot”</span> by a small increment. Work together to navigate the maze!
+      </p>
+      <ul style="text-align:left; margin:0 auto 18px auto; max-width:410px; color:#333; font-size:1.05rem; line-height:1.7; padding-left:0;">
+        <li style="margin-bottom:10px;">
+          <span style="color:#4327c0;font-weight:bold;">Contract Address (CA):</span> Only released on <a href="https://x.com/CrowdDot" target="_blank" style="color:#e424d4;font-weight:bold;">@CrowdDot</a> on Twitter. It will update here within 1-2 minutes. The page also may need to be refreshed.
+        </li>
+        <li style="margin-bottom:10px;">
+          <span style="color:#4327c0;font-weight:bold;">Live Market Data:</span> Provided by <a href="https://pumpportal.fun/" target="_blank" style="color:#e424d4;font-weight:bold;">Pump Portal API</a>.
+        </li>
+        <li style="margin-bottom:10px;">
+          <span style="color:#4327c0;font-weight:bold;">Dev Wallet:</span> Starts with 2 SOL (~5% supply). Hitting a <span style="color:#ff5858;font-weight:bold;">red wall</span> triggers a sale of 5% of the dev wallet (5-10s delay, game pauses 5s).
+        </li>
+        <li style="margin-bottom:10px;">
+          <span style="color:#4327c0;font-weight:bold;">Reach the green circle:</span> 10% of the dev wallet is <span style="color:#008f30;font-weight:bold;">locked</span> for 2 weeks via <a href="https://app.streamflow.finance/token-lock" target="_blank" style="color:#e424d4;font-weight:bold;">Streamflow</a>. A tweet with a screenshot and link is automatically posted for transparency.
+        </li>
+        <li style="margin-bottom:10px;">
+          <span style="color:#4327c0;font-weight:bold;">Levels:</span> 7 total, each harder than the last. Next level starts 20s after a win. 
+        <li style="margin-bottom:10px;">
+          <span style="color:#4327c0;font-weight:bold;">Future:</span> If successful, the game will expand with new features and modes. After 2 weeks, V2 will launch under the same CA.
+        </li>
+        <li style="margin-bottom:10px;">
+          <span style="color:#4327c0;font-weight:bold;">Github:</span> No public repo yet due to issues with server security, but one will be released post-launch for feedback and contributions.
+        </li>
+        
+      </ul>
+      <p style="font-size:1rem; color:#888; margin-top:10px;">
+        <em>This is a small scale project with a small team. Expect bugs or inconsistencies. Thanks for playing and helping test CrowdDot!</em>
+      </p>
+    </div>
+  </div>
+
+  <!-- Notification Popup -->
+  <div id="notificationPopup" style="display:none;">
+    <span id="notificationText"></span>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+  const socket = io();
+  const canvas = document.getElementById('gameCanvas');
+  const ctx = canvas.getContext('2d');
+  const chat = document.getElementById('chat');
+
+  let sharedPlayer = { x: 10, y: 10 };
+  let maze = [];
+  let greenCircle = { x: 250, y: 250, radius: 15 };
+  let currentLevel = 0;
+  const maxChatMessages = 50;
+
+  // Listen for level data from server
+  socket.on('levelData', (data) => {
+    currentLevel = data.currentLevel;
+    maze = data.maze;
+    greenCircle = data.greenCircle;
+    sharedPlayer = data.sharedPlayer;
+    drawPlayer();
+  });
+
+    // Draw the maze
+    function drawMaze() {
+      ctx.fillStyle = 'red';
+      maze.forEach((rect) => {
+        ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
+      });
+    }
+
+    // Check for collision with the maze
+    function checkMazeCollision() {
+      return maze.some((rect) => {
+        return (
+          sharedPlayer.x < rect.x + rect.width &&
+          sharedPlayer.x + 10 > rect.x &&
+          sharedPlayer.y < rect.y + rect.height &&
+          sharedPlayer.y + 10 > rect.y
+        );
+      });
+    }
+
+    function drawPlayer() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw the maze
+      drawMaze();
+
+      // Draw the green circle
+      ctx.fillStyle = 'green';
+      ctx.beginPath();
+      ctx.arc(greenCircle.x, greenCircle.y, greenCircle.radius, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Draw the player
+      ctx.fillStyle = 'blue';
+      ctx.fillRect(sharedPlayer.x, sharedPlayer.y, 10, 10);
+
+      // Draw the level number in the top right
+      ctx.font = 'bold 20px Arial';
+      ctx.fillStyle = '#222';
+      ctx.textAlign = 'right';
+      ctx.fillText(`Level ${currentLevel + 1}`, canvas.width - 15, 30);
+    }
+
+    function checkCollision() {
+      const dx = sharedPlayer.x + 5 - greenCircle.x; // +5 to check the center of the player box
+      const dy = sharedPlayer.y + 5 - greenCircle.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      return distance < greenCircle.radius + 5; // 5 is half the player's box size
+    }
+
+    
+    //implement caps lock
+    document.addEventListener('keydown', (e) => {
+      let dx = 0, dy = 0;
+      if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') dy = -5;
+      else if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') dy = 5;
+      else if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') dx = -5;
+      else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') dx = 5;
+      if (dx !== 0 || dy !== 0) {
+        socket.emit('move', { dx, dy });
+      }
+    });
+
+    // Update the shared player's position
+    socket.on('updatePosition', (newPosition) => {
+      sharedPlayer = newPosition;
+      drawPlayer();
+
+      if (checkMazeCollision()) {
+        socket.emit('mazeCollision');
+      }
+      if (checkCollision()) {
+        socket.emit('win');
+      }
+    });
+
+    // Display chat messages
+    socket.on('chatMessage', (msg) => {
+      const messageElement = document.createElement('div');
+      let popupType = null;
+      let popupMsg = null;
+
+      if (typeof msg === 'object' && msg.color) {
+        messageElement.style.color = msg.color;
+        messageElement.textContent = msg.text;
+
+        // Detect win/loss by color or text
+        if (msg.color === 'red' && msg.text.includes('sent back to the start')) {
+          popupType = 'loss';
+          popupMsg = 'A wall has been hit! 5% of dev tokens sold!';
+        } else if (msg.color === 'green' && msg.text.includes('has been completed!')) {
+          popupType = 'win';
+          popupMsg = msg.text;
+        } else if (msg.color === 'blue' && msg.text.includes('has started!')) {
+          popupType = 'info';
+          popupMsg = msg.text;
+        }
+      } else if (typeof msg === 'string') {
+        messageElement.textContent = msg;
+      }
+
+      chat.appendChild(messageElement);
+
+      // Remove older messages if the chat exceeds the maximum limit
+      while (chat.children.length > maxChatMessages) {
+        chat.removeChild(chat.firstChild);
+      }
+      chat.scrollTop = chat.scrollHeight;
+
+      // Show popup if win/loss/level detected
+      if (popupType && popupMsg) {
+        showNotification(popupMsg, popupType);
+      }
+    });
+
+    // Show a pretty notification popup
+function showNotification(message, type = 'info') {
+  const popup = document.getElementById('notificationPopup');
+  const text = document.getElementById('notificationText');
+  text.textContent = message;
+
+  // Style based on type
+  if (type === 'win') {
+    popup.style.background = 'linear-gradient(90deg, #43e97b 0%, #38f9d7 100%)';
+    popup.style.boxShadow = '0 6px 32px rgba(67,233,123,0.18), 0 1.5px 8px rgba(56,249,215,0.10)';
+  } else if (type === 'loss') {
+    popup.style.background = 'linear-gradient(90deg, #ff5858 0%, #f857a6 100%)';
+    popup.style.boxShadow = '0 6px 32px rgba(255,88,88,0.18), 0 1.5px 8px rgba(248,87,166,0.10)';
+  } else if (type === 'info') {
+    popup.style.background = 'linear-gradient(90deg, #4e54c8 0%, #8f94fb 100%)';
+    popup.style.boxShadow = '0 6px 32px rgba(76,110,245,0.18), 0 1.5px 8px rgba(143,148,251,0.10)';
+  } else {
+    popup.style.background = 'linear-gradient(90deg, #7573fa 0%, #ff758c 100%)';
+    popup.style.boxShadow = '';
+  }
+
+  popup.classList.add('show');
+  popup.style.display = 'block';
+
+  setTimeout(() => {
+    popup.classList.remove('show');
+    setTimeout(() => { popup.style.display = 'none'; }, 400);
+  }, 3500);
+}
+
+    drawPlayer(); // Initial draw
+  </script>
+  <script>
+    document.addEventListener('mousemove', (event) => {
+      const x = event.clientX;
+      const y = event.clientY;
+
+      // Generate colors based on cursor position
+      const red = Math.round((x / window.innerWidth) * 30);
+      const green = Math.round((y / window.innerHeight) * 30);
+      const blue = Math.round(((window.innerWidth - x) / window.innerWidth) * 30);
+
+      // Create a radial gradient centered on the mouse position
+      const gradient = `radial-gradient(circle at ${x}px ${y}px, rgb(${red}, ${green}, ${blue}), #000000)`;
+
+      // Apply the gradient to the background
+      document.body.style.background = gradient;
+    });
+  </script>
+  <script>
+  // Username logic: get from localStorage, redirect if missing
+  const username = localStorage.getItem('username');
+  if (!username) {
+    window.location.href = 'intro.html';
+  } else {
+    socket.emit('setUsername', username);
+  }
+  </script>
+  <script>
+    // Modal open/close logic
+    document.getElementById('openLearnMoreBtn').onclick = function() {
+      document.getElementById('learnMoreModal').style.display = 'flex';
+    };
+    document.getElementById('closeModalBtn').onclick = function() {
+      document.getElementById('learnMoreModal').style.display = 'none';
+    };
+    // Optional: close modal when clicking outside content
+    document.getElementById('learnMoreModal').onclick = function(e) {
+      if (e.target === this) this.style.display = 'none';
+    };
+  </script>
+  <script>
+    // Fetch CA from server and update UI
+    fetch('/api/ca')
+      .then(res => res.json())
+      .then(data => {
+        const ca = data.ca;
+        document.getElementById('caText').textContent = ca;
+        const copyBtn = document.getElementById('copyCAButton');
+        const feedback = document.getElementById('copyCAFeedback');
+        copyBtn.onclick = function() {
+          navigator.clipboard.writeText(ca).then(() => {
+            feedback.style.display = 'inline';
+            setTimeout(() => feedback.style.display = 'none', 1200);
+          });
+        };
+      })
+      .catch(() => {
+        document.getElementById('caText').textContent = "CA unavailable";
+      });
+  </script>
+  <script>
+  // Listen for player count updates from the server
+  socket.on('playerCount', (count) => {
+    document.getElementById('chatHeader').textContent = `Active Players: ${count}`;
+  });
+
+  // Listen for tokenState updates from the server
+socket.on('tokenState', (data) => {
+  const remaining = Math.max(0, Math.min(1, data.remaining));
+  const locked = Math.max(0, Math.min(1, data.locked));
+  const sold = Math.max(0, Math.min(1, data.sold));
+  // Calculate widths as percentages
+  const total = remaining + locked + sold || 1;
+  const remPercent = (remaining / total) * 100;
+  const lockPercent = (locked / total) * 100;
+  const soldPercent = (sold / total) * 100;
+
+  document.getElementById('devHoldingsRemaining').style.width = remPercent + '%';
+  document.getElementById('devHoldingsLocked').style.width = lockPercent + '%';
+  document.getElementById('devHoldingsSold').style.width = soldPercent + '%';
+
+  document.getElementById('devHoldingsRemainingLabel').textContent = `Remaining: ${(remaining*100).toFixed(0)}%`;
+  document.getElementById('devHoldingsLockedLabel').textContent = `Locked: ${(locked*100).toFixed(0)}%`;
+  document.getElementById('devHoldingsSoldLabel').textContent = `Sold: ${(sold*100).toFixed(0)}%`;
+});
+
+// Initialize bar to 100% remaining
+document.getElementById('devHoldingsRemaining').style.width = '100%';
+document.getElementById('devHoldingsLocked').style.width = '0%';
+document.getElementById('devHoldingsSold').style.width = '0%';
+  </script>
+  <footer>
+    <p>
+       
+      <a href="https://x.com/CrowdDot" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/X_logo.jpg" alt="X Logo" style="width: 30px; height: 30px; vertical-align: middle;" />
+      </a>
+    </p>
+    <p>&copy; 2025 CrowdDot. All rights reserved.</p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About CrowdDot</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background: linear-gradient(135deg, #222222, #000000);
+      text-align: center;
+      color: #fff;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 3rem;
+      font-weight: bold;
+      background: linear-gradient(135deg, #7573fa, #ff758c, #ff0037);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: glow 5s infinite alternate, slideIn 1.5s ease-out;
+      text-shadow: 0 0 15px rgba(255, 120, 150, 0.8), 0 0 30px rgba(255, 80, 120, 0.6);
+      margin-bottom: 20px;
+    }
+
+    p {
+      font-size: 1.2rem;
+      line-height: 1.8;
+      max-width: 800px;
+      margin-bottom: 30px;
+    }
+
+    ul {
+      text-align: left;
+      max-width: 600px;
+      margin: 0 auto 30px;
+      padding: 0;
+      list-style-type: none;
+    }
+
+    ul li {
+      background: #333;
+      padding: 10px 15px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      color: #fff;
+    }
+
+    ul li:nth-child(odd) {
+      background: #444;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      color: #fff;
+      background: linear-gradient(135deg, #eb74e1, #acb6e5);
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    button:hover {
+      background: linear-gradient(135deg, #e424d4, #4327c0);
+      transform: scale(1.05);
+    }
+
+    button:active {
+      transform: scale(0.95);
+    }
+  </style>
+</head>
+<body>
+  <h1>About CrowdDot</h1>
+  <p>
+    CrowdDot is a Solana-based crypto experiment and my senior thesis project. It challenges players to work together to control a single "dot" on the screen. The game is built using Pump Portal's API and WebSockets for real-time interaction.
+  </p>
+  <ul>
+    <li>Players collectively control a single "dot" on the game board.</li>
+    <li>Each player can move the dot every 2 seconds.</li>
+    <li>If the dot hits a red wall, <strong>5% of developer tokens are sold</strong>.</li>
+    <li>If the dot reaches the green circle, <strong>5% of developer tokens are locked</strong>.</li>
+    <li>The game demonstrates the power of community coordination and blockchain integration.</li>
+  </ul>
+  <p>
+    This project showcases how WebSockets enable real-time communication and how blockchain APIs like Pump Portal's can be used to create innovative, interactive experiences.
+  </p>
+  <button onclick="window.location.href='index.html'">Back to Game</button>
+  <script>
+    // Retrieve the username from localStorage
+    const username = localStorage.getItem('username');
+
+    // Redirect to the intro page if no username is found
+    if (!username) {
+      window.location.href = 'intro.html';
+    }
+
+    // Optionally, display the username on the page
+    console.log('Logged in as:', username);
+  </script>
+</body>
+</html>

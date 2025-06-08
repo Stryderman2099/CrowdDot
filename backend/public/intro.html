@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CrowdDot</title>
+  <link rel="icon" href="crowddotlogo.png" type="image/png" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background: linear-gradient(135deg, #222222, #000000); /* Updated color scheme */
+      text-align: center;
+      transition: background 0.3s ease; /* Smooth transition for background changes */
+    }
+
+    h1 {
+      font-size: 3rem;
+      font-weight: bold;
+      text-align: center;
+      background: linear-gradient(135deg, #7573fa, #ff758c, #ff0037);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: glow 5s infinite alternate, slideIn 1.5s ease-out;
+      text-shadow: 0 0 15px rgba(255, 120, 150, 0.8), 0 0 30px rgba(255, 80, 120, 0.6);
+      margin-bottom: 20px;
+    }
+
+    @keyframes glow {
+      from {
+        text-shadow: 0 0 15px rgba(255, 120, 150, 0.8), 0 0 30px rgba(209, 0, 49, 0.6);
+      }
+      to {
+        text-shadow: 0 0 25px rgb(140, 102, 209), 0 0 40px rgba(38, 86, 218, 0.8);
+      }
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateY(-100px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    p {
+      font-size: 1.2rem;
+      color: #fff; /* Updated text color */
+      margin-bottom: 30px;
+      max-width: 600px;
+    }
+
+    input {
+      padding: 10px;
+      font-size: 16px;
+      border: 2px solid #ccc;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      width: 80%;
+      max-width: 300px;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+
+    input:focus {
+      border-color: #74ebd5;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      color: #fff;
+      background: linear-gradient(135deg, #b808a9, #0229da);
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    button:hover {
+      background: linear-gradient(135deg, #e424d4, #4327c0);
+      transform: scale(1.05);
+    }
+
+    button:active {
+      transform: scale(0.95);
+    }
+
+    #errorMessage {
+      color: red;
+      font-size: 1rem;
+      margin-top: 10px;
+      display: none;
+    }
+
+    /* Rotating border for the Learn More button */
+    .rotating-border {
+      display: inline-block;
+      margin-top: 20px;
+      border-radius: 50px;
+      position: static;
+      padding: 0;
+      margin-bottom: 20px; 
+    }
+
+    .rotating-border::before {
+      content: none;
+    }
+
+    .learn-more-btn {
+      position: relative;
+      z-index: 1;
+      padding: 12px 32px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #fff;
+      background: #222;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(76, 110, 245, 0.15);
+      transition: background 0.3s, transform 0.2s, box-shadow 0.2s;
+      letter-spacing: 1px;
+      overflow: hidden;
+    }
+
+    .learn-more-btn:hover {
+      background: linear-gradient(135deg, #4327c0, #e424d4);
+      transform: scale(1.07);
+      box-shadow: 0 6px 18px rgba(76, 110, 245, 0.25);
+    }
+
+    .learn-more-btn:active {
+      transform: scale(0.97);
+    }
+
+    /* Modal styles */
+    #learnMoreModal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(30, 20, 60, 0.55); /* darker, more transparent overlay */
+      backdrop-filter: blur(6px); /* subtle blur for glass effect */
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s;
+    }
+
+    .modal-content {
+      background: rgba(255, 255, 255, 0.82); /* semi-transparent white */
+      border-radius: 18px;
+      padding: 36px 44px 28px 44px;
+      box-shadow: 0 8px 40px 0 rgba(60, 40, 120, 0.25), 0 1.5px 8px 0 rgba(0,0,0,0.10);
+      position: relative;
+      max-width: 440px;
+      width: 90%;
+      text-align: center;
+      border: 2px solid #e424d4;
+      animation: modalPopIn 0.35s cubic-bezier(.68,-0.55,.27,1.55);
+    }
+
+    @keyframes modalPopIn {
+      0% { transform: scale(0.8) translateY(40px); opacity: 0; }
+      100% { transform: scale(1) translateY(0); opacity: 1; }
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 14px;
+      right: 22px;
+      font-size: 2.2rem;
+      color: #e424d4;
+      cursor: pointer;
+      font-weight: bold;
+      background: none;
+      border: none;
+      transition: color 0.2s, transform 0.2s;
+      z-index: 10;
+    }
+
+    .close-modal:hover,
+    .close-modal:focus {
+      color: #4327c0;
+      transform: scale(1.2) rotate(8deg);
+    }
+
+    .modal-content h2 {
+      margin-top: 0;
+      font-size: 2rem;
+      color: #4327c0;
+      background: linear-gradient(90deg, #e424d4 30%, #4327c0 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 2px 12px rgba(228,36,212,0.10);
+    }
+
+    .modal-content p {
+      color: #333;
+      font-size: 1.1rem;
+      margin: 18px 0 0 0;
+      line-height: 1.7;
+      text-shadow: 0 1px 6px rgba(255,255,255,0.12);
+    }
+
+    /* Copy CA Button Styles */
+    #copyCAWrapper {
+      position: absolute;
+      left: 50px; /* Adjust as needed for spacing from the edge */
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 100;
+    }
+    #copyCAContainer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin: 28px 0 18px 0;
+      padding: 14px 28px;
+      background: rgba(40, 40, 60, 0.55);
+      border-radius: 22px;
+      box-shadow: 0 8px 32px 0 rgba(76,110,245,0.18), 0 2px 12px 0 rgba(228,36,212,0.13);
+      backdrop-filter: blur(8px);
+      border: 1.5px solid rgba(108,99,255,0.18);
+      font-size: 1.13rem;
+      font-family: 'Fira Mono', 'Consolas', monospace;
+      transition: box-shadow 0.2s, background 0.2s;
+    }
+    #copyCAContainer:hover {
+      box-shadow: 0 12px 36px 0 rgba(108,99,255,0.22), 0 4px 18px 0 rgba(228,36,212,0.18);
+      background: rgba(60, 60, 90, 0.72);
+    }
+    #copyCAButton {
+      background: linear-gradient(135deg, #6c63ff 60%, #9900ff 100%);
+      border: none;
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: #000000;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(76, 110, 245, 0.10);
+      transition: background 0.2s, transform 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #copyCAButton:hover {
+      background: linear-gradient(135deg, #e424d4 10%, #6c63ff 90%);
+      transform: scale(1.08);
+    }
+    #caText {
+      font-family: 'Fira Mono', 'Consolas', monospace;
+      background: linear-gradient(90deg, #6c63ff 10%, #e424d4 90%);
+      color: #000000;
+      padding: 7px 18px;
+      border-radius: 7px;
+      font-size: 1.08rem;
+      letter-spacing: 0.03em;
+      user-select: all;
+      box-shadow: 0 1px 4px rgba(76, 110, 245, 0.08);
+      transition: background 0.2s;
+      border: 1.5px solid #fff2;
+      text-shadow: 0 1px 6px #0008;
+    }
+    #copyCAFeedback {
+      margin-left: 10px;
+      color: #27ae60;
+      font-size: 1rem;
+      font-weight: bold;
+      display: none;
+      transition: opacity 0.2s;
+      letter-spacing: 0.04em;
+      text-shadow: 0 1px 6px #fff7;
+    }
+    @media (max-width: 900px) {
+      #copyCAContainer {
+        max-width: 98vw;
+        padding: 10px 4vw;
+        font-size: 1rem;
+      }
+      #caText {
+        font-size: 0.98rem;
+        padding: 6px 8px;
+      }
+    }
+    @media (max-width: 600px) {
+      #copyCAContainer {
+        flex-direction: column;
+        gap: 8px;
+        padding: 10px 2vw;
+      }
+      #copyCAButton {
+        margin-right: 0;
+      }
+      #copyCAFeedback {
+        margin-left: 0;
+      }
+    }
+
+    /* Footer styles */
+    footer {
+      width: 100%;
+      text-align: center;
+      padding: 10px 0;
+      background: linear-gradient(135deg, #4b64d681, #333333be);
+      color: #fff;
+      font-size: 12px; /* Smaller font size */
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    footer p {
+      margin: 2px 0;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 0.95rem;
+    }
+
+    footer a {
+      color: #1da0f22f;
+      text-decoration: none;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <h1>Welcome to CrowdDot</h1>
+  <p>
+    Can the community work together to reach the end?
+  </p>
+  <form id="introForm">
+    <input id="usernameInput" type="text" placeholder="Enter your username" required />
+    <button type="submit">Start Game</button>
+    <div id="errorMessage">This username is already taken. Please choose another one.</div>
+  </form>
+  <div class="rotating-border">
+    <button class="learn-more-btn" id="openLearnMoreBtn">Learn More</button>
+  </div>
+  <!-- Modal Structure -->
+  <div id="learnMoreModal" style="display:none;">
+    <div class="modal-content">
+      <span class="close-modal" id="closeModalBtn">&times;</span>
+      <h2>About CrowdDot</h2>
+      <p style="font-size:1.13rem; margin-bottom:18px;">
+        <strong>CrowdDot</strong> is a <span style="color:#e424d4;font-weight:bold;">crypto community game</span> where every player moves a <span style="color:#4e54c8;font-weight:bold;">shared blue “dot”</span> by a small increment. Work together to navigate the maze!
+      </p>
+      <ul style="text-align:left; margin:0 auto 18px auto; max-width:410px; color:#333; font-size:1.05rem; line-height:1.7; padding-left:0;">
+        <li style="margin-bottom:10px;">
+          <span style="color:#4327c0;font-weight:bold;">Contract Address (CA):</span> Only released on <a href="https://x.com/CrowdDot" target="_blank" style="color:#e424d4;font-weight:bold;">@CrowdDot</a> on Twitter. It will update here within 1-2 minutes. The page also may need to be refreshed.
+        </li>
+        <li style="margin-bottom:10px;">
+          <span style="color:#4327c0;font-weight:bold;">Live Market Data:</span> Provided by <a href="https://pumpportal.fun/" target="_blank" style="color:#e424d4;font-weight:bold;">Pump Portal API</a>.
+        </li>
+        <li style="margin-bottom:10px;">
+          <span style="color:#4327c0;font-weight:bold;">Dev Wallet:</span> Starts with 2 SOL (~5% supply). Hitting a <span style="color:#ff5858;font-weight:bold;">red wall</span> triggers a sale of 5% of the dev wallet (5-10s delay, game pauses 5s).
+        </li>
+        <li style="margin-bottom:10px;">
+          <span style="color:#4327c0;font-weight:bold;">Reach the green circle:</span> 10% of the dev wallet is <span style="color:#008f30;font-weight:bold;">locked</span> for 2 weeks via <a href="https://app.streamflow.finance/token-lock" target="_blank" style="color:#e424d4;font-weight:bold;">Streamflow</a>. A tweet with a screenshot and link is automatically posted for transparency.
+        </li>
+        <li style="margin-bottom:10px;">
+          <span style="color:#4327c0;font-weight:bold;">Levels:</span> 7 total, each harder than the last. Next level starts 20s after a win. 
+        </li>
+        <li style="margin-bottom:10px;">
+          <span style="color:#4327c0;font-weight:bold;">Future:</span> If successful, the game will expand with new features and modes. After 2 weeks, V2 will launch under the same CA.
+        </li>
+        <li style="margin-bottom:10px;">
+          <span style="color:#4327c0;font-weight:bold;">Github:</span> No public repo yet due to issues with server security, but one will be released post-launch for feedback and contributions.
+        </li>
+      
+      </ul>
+      <p style="font-size:1rem; color:#888; margin-top:10px;">
+        <em>This is a small scale project with a small team. Expect bugs or inconsistencies. Thanks for playing and helping test CrowdDot!</em>
+      </p>
+    </div>
+  </div>
+
+  <!-- Copy CA Button Start -->
+  <div id="copyCAWrapper">
+    <div id="copyCAContainer">
+      <button id="copyCAButton" title="Copy Contract Address">
+        <svg width="22" height="22" viewBox="0 0 20 20" fill="none" style="vertical-align: middle;">
+          <rect x="4" y="4" width="12" height="12" rx="3" fill="#fff" stroke="#6c63ff" stroke-width="2"/>
+          <rect x="7" y="7" width="9" height="9" rx="2" fill="#6c63ff" stroke="#fff" stroke-width="1.5"/>
+        </svg>
+      </button>
+      <span id="caText">CA Loading...</span>
+      <span id="copyCAFeedback">Copied!</span>
+    </div>
+  </div>
+  <!-- Copy CA Button End -->
+
+  <!-- Footer Start -->
+  <footer>
+    <p>
+       
+      <a href="https://x.com/CrowdDot" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/X_logo.jpg" alt="X Logo" style="width: 30px; height: 30px; vertical-align: middle;" />
+      </a>
+    </p>
+    <p>&copy; 2025 CrowdDot. All rights reserved.</p>
+  </footer>
+  <!-- Footer End -->
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const form = document.getElementById('introForm');
+    const usernameInput = document.getElementById('usernameInput');
+    const errorMessage = document.getElementById('errorMessage');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const username = usernameInput.value.trim();
+      if (username) {
+        // Check with the server if the username is available
+        socket.emit('checkUsername', username, (isAvailable) => {
+          if (isAvailable) {
+            // Redirect to the game page with the username as a query parameter
+            window.location.href = `index.html?username=${encodeURIComponent(username)}`;
+            // Save the username in localStorage
+            localStorage.setItem('username', username);
+
+          } else {
+            // Show an error message if the username is taken
+            errorMessage.style.display = 'block';
+          }
+        });
+      }
+    });
+
+    // Mouse hover background mechanics
+    document.addEventListener('mousemove', (event) => {
+      const x = event.clientX;
+      const y = event.clientY;
+
+      // Generate colors based on cursor position
+      const red = Math.round((x / window.innerWidth) * 30);
+      const green = Math.round((y / window.innerHeight) * 30);
+      const blue = Math.round(((window.innerWidth - x) / window.innerWidth) * 30);
+
+      // Create a radial gradient centered on the mouse position
+      const gradient = `radial-gradient(circle at ${x}px ${y}px, rgb(${red}, ${green}, ${blue}), #000000)`;
+
+      // Apply the gradient to the background
+      document.body.style.background = gradient;
+    });
+
+    // Modal open/close logic
+    document.getElementById('openLearnMoreBtn').onclick = function() {
+      document.getElementById('learnMoreModal').style.display = 'flex';
+    };
+    document.getElementById('closeModalBtn').onclick = function() {
+      document.getElementById('learnMoreModal').style.display = 'none';
+    };
+    // Optional: close modal when clicking outside content
+    document.getElementById('learnMoreModal').onclick = function(e) {
+      if (e.target === this) this.style.display = 'none';
+    };
+
+    // Copy CA logic
+    // Fetch CA from server and update UI
+    fetch('/api/ca')
+      .then(res => res.json())
+      .then(data => {
+        const ca = data.ca;
+        document.getElementById('caText').textContent = ca;
+        const copyBtn = document.getElementById('copyCAButton');
+        const feedback = document.getElementById('copyCAFeedback');
+        copyBtn.onclick = function() {
+          navigator.clipboard.writeText(ca).then(() => {
+            feedback.style.display = 'inline';
+            setTimeout(() => feedback.style.display = 'none', 1200);
+          });
+        };
+      })
+      .catch(() => {
+        document.getElementById('caText').textContent = "CA unavailable";
+      });
+  </script>
+</body>
+</html>
