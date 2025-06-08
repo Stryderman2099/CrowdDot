@@ -214,14 +214,14 @@ io.on('connection', (socket) => {
     }
 
     const now = Date.now();
-    const cooldown = 2000; // 2 seconds cooldown
+    const cooldown = 1000; // 1 second cooldown
 
     // Check if the user is an admin
     if (users[socket.id] !== ADMIN_KEY) {
       if (now - lastMoveTime[socket.id] < cooldown) {
         // Send a red chat message to the player
         socket.emit('chatMessage', {
-          text: 'You must wait 2 seconds before moving again!',
+          text: 'You must wait 1 second before moving again!',
           color: 'red',
         });
         return;
