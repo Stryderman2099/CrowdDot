@@ -9,7 +9,8 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-const ADMIN_KEY = "admin123"; // Define the admin key
+const ADMIN_KEY = process.env.ADMIN_KEY; // Define the admin key
+const PORT = process.env.PORT || 4000; // Use environment variable or default to 3000
 
 let sharedPlayer = { x: 10, y: 10 };
 let currentLevel = 0;
@@ -334,6 +335,6 @@ io.on('connection', (socket) => {
   });
 });
 
-server.listen(3000, () => {
-  console.log('Server listening on http://localhost:3000');
+server.listen(PORT, () => {
+  console.log(`Server listening on http://localhost:${PORT}`);
 });
