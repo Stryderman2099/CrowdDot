@@ -36,12 +36,12 @@
 
     /* Smooth transition for the game canvas */
     #gameCanvas {
-      transition: transform 0.3s ease; /* Smooth transition for scaling */
+      transition: transform 0.3s ease; 
     }
 
     /* Hover effect for the game canvas */
     #gameCanvas:hover {
-      transform: scale(1.03); /* Increase size by 10% */
+      transform: scale(1.03); 
     }
 
     #chatContainer {
@@ -56,7 +56,7 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      /* Add these lines: */
+      
       position: relative;
     }
 
@@ -221,7 +221,7 @@
       }
     }
 
-    /* Footer styling */
+    
     footer {
       width: 100%;
       text-align: center;
@@ -253,7 +253,7 @@
       font-size: 3rem;
       font-weight: bold;
       text-align: center;
-      background: linear-gradient(135deg, #ff0037, #ff758c, #7573fa); /* Reversed gradient */
+      background: linear-gradient(135deg, #ff0037, #ff758c, #7573fa); 
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -263,7 +263,7 @@
     }
 
     h1:nth-of-type(2) {
-      font-size: 1.5rem; /* Smaller font size */
+      font-size: 1.5rem; 
       font-weight: normal;
       text-align: center;
       color: #fff;
@@ -310,7 +310,7 @@
       transform: scale(0.97);
     }
 
-    /* Modal styles */
+    
     #learnMoreModal {
       display: none;
       position: fixed;
@@ -319,15 +319,15 @@
       top: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(30, 20, 60, 0.55); /* darker, more transparent overlay */
-      backdrop-filter: blur(6px); /* subtle blur for glass effect */
+      background: rgba(30, 20, 60, 0.55); 
+      backdrop-filter: blur(6px); 
       align-items: center;
       justify-content: center;
       transition: background 0.3s;
     }
 
     .modal-content {
-      background: rgba(255, 255, 255, 0.82); /* semi-transparent white */
+      background: rgba(255, 255, 255, 0.82); 
       border-radius: 18px;
       padding: 36px 44px 28px 44px;
       box-shadow: 0 8px 40px 0 rgba(60, 40, 120, 0.25), 0 1.5px 8px 0 rgba(0,0,0,0.10);
@@ -386,7 +386,7 @@
 
     #copyCAWrapper {
       position: absolute;
-      left: 50px; /* Adjust as needed for spacing from the edge */
+      left: 50px; 
       top: 50%;
       transform: translateY(-50%);
       z-index: 100;
@@ -479,7 +479,7 @@
       }
     }
 
-    /* Notification Popup styles */
+    
     #notificationPopup {
       position: fixed;
       top: 32px;
@@ -511,7 +511,7 @@
       100% { transform: translateX(-50%) scale(1);}
     }
 
-    /* Dev Holdings Progress Bar */
+    
     #devHoldingsBarContainer {
       margin: 80px 0;
       width: 100%;
@@ -596,10 +596,18 @@
       text-shadow: 0 1px 6px #fff7, 0 1px 2px #0002;
     }
 
+    .x-logo-footer {
+      transition: transform 0.22s cubic-bezier(.68,-0.55,.27,1.55), box-shadow 0.18s;
+      will-change: transform;
+    }
+    .x-logo-footer:hover {
+      transform: scale(1.18);
+      
+    }
   </style>
 </head>
 <body>
-  <!-- Dev Holdings Progress Bar -->
+  
 <div id="devHoldingsBarContainer">
   <label for="devHoldingsBar" id="devHoldingsMainLabel">
     Dev Holdings
@@ -616,7 +624,7 @@
   </div>
 </div>
 
-  <!-- Copy CA Button Start -->
+  
   <div id="copyCAWrapper">
     <div id="copyCAContainer">
       <button id="copyCAButton" title="Copy Contract Address">
@@ -629,7 +637,7 @@
       <span id="copyCAFeedback">Copied!</span>
     </div>
   </div>
-  <!-- Copy CA Button End -->
+  
   <div id="gameContainer">
     <h1>CrowdDot</h1>
     <h1>The Solana Social Experiment.</h1>
@@ -655,13 +663,13 @@
     <div id="chat"></div>
   </div>
 
-  <!-- Modal Structure -->
+  
   <div id="learnMoreModal" style="display:none;">
     <div class="modal-content">
       <span class="close-modal" id="closeModalBtn">&times;</span>
       <h2>About CrowdDot</h2>
       <p style="font-size:1.13rem; margin-bottom:18px;">
-        <strong>CrowdDot</strong> is a <span style="color:#e424d4;font-weight:bold;">crypto community game</span> where every player moves a <span style="color:#4e54c8;font-weight:bold;">shared blue “dot”</span> by a small increment. Work together to navigate the maze!
+        <strong>CrowdDot</strong> is a <span style="color:#e424d4;font-weight:bold;">crypto community game</span> where every player moves a <span style="color:#4e54c8;font-weight:bold;">shared blue “dot”</span> by a small increment. Work together to navigate the maze and lock the token supply!
       </p>
       <ul style="text-align:left; margin:0 auto 18px auto; max-width:410px; color:#333; font-size:1.05rem; line-height:1.7; padding-left:0;">
         <li style="margin-bottom:10px;">
@@ -671,13 +679,13 @@
           <span style="color:#4327c0;font-weight:bold;">Live Market Data:</span> Provided by <a href="https://pumpportal.fun/" target="_blank" style="color:#e424d4;font-weight:bold;">Pump Portal API</a>.
         </li>
         <li style="margin-bottom:10px;">
-          <span style="color:#4327c0;font-weight:bold;">Dev Wallet:</span> Starts with 2 SOL (~5% supply). Hitting a <span style="color:#ff5858;font-weight:bold;">red wall</span> triggers a sale of 5% of the dev wallet (5-10s delay, game pauses 5s).
+          <span style="color:#4327c0;font-weight:bold;">Dev Wallet:</span> Starts with 2 SOL (~5% supply). Hitting a <span style="color:#ff5858;font-weight:bold;">red wall</span> triggers a sale of 5% of the dev wallet.
         </li>
         <li style="margin-bottom:10px;">
           <span style="color:#4327c0;font-weight:bold;">Reach the green circle:</span> 10% of the dev wallet is <span style="color:#008f30;font-weight:bold;">locked</span> for 2 weeks via <a href="https://app.streamflow.finance/token-lock" target="_blank" style="color:#e424d4;font-weight:bold;">Streamflow</a>. A tweet with a screenshot and link is automatically posted for transparency.
         </li>
         <li style="margin-bottom:10px;">
-          <span style="color:#4327c0;font-weight:bold;">Levels:</span> 7 total, each harder than the last. Next level starts 20s after a win. 
+          <span style="color:#4327c0;font-weight:bold;">Levels:</span> 10 total, each harder than the last. Next level starts 20s after a win. 
         <li style="margin-bottom:10px;">
           <span style="color:#4327c0;font-weight:bold;">Future:</span> If successful, the game will expand with new features and modes. After 2 weeks, V2 will launch under the same CA.
         </li>
@@ -763,15 +771,15 @@
     }
 
     function checkCollision() {
-      const dx = sharedPlayer.x + 5 - greenCircle.x; // +5 to check the center of the player box
+      const dx = sharedPlayer.x + 5 - greenCircle.x; 
       const dy = sharedPlayer.y + 5 - greenCircle.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
 
-      return distance < greenCircle.radius + 5; // 5 is half the player's box size
+      return distance < greenCircle.radius + 5; 
     }
 
     
-    //implement caps lock
+    
     document.addEventListener('keydown', (e) => {
       let dx = 0, dy = 0;
       if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') dy = -5;
@@ -823,19 +831,19 @@
 
       chat.appendChild(messageElement);
 
-      // Remove older messages if the chat exceeds the maximum limit
+      
       while (chat.children.length > maxChatMessages) {
         chat.removeChild(chat.firstChild);
       }
       chat.scrollTop = chat.scrollHeight;
 
-      // Show popup if win/loss/level detected
+      
       if (popupType && popupMsg) {
         showNotification(popupMsg, popupType);
       }
     });
 
-    // Show a pretty notification popup
+    
 function showNotification(message, type = 'info') {
   const popup = document.getElementById('notificationPopup');
   const text = document.getElementById('notificationText');
@@ -865,7 +873,7 @@ function showNotification(message, type = 'info') {
   }, 3500);
 }
 
-    drawPlayer(); // Initial draw
+    drawPlayer(); 
   </script>
   <script>
     document.addEventListener('mousemove', (event) => {
@@ -894,7 +902,7 @@ function showNotification(message, type = 'info') {
   }
   </script>
   <script>
-    // Modal open/close logic
+    
     document.getElementById('openLearnMoreBtn').onclick = function() {
       document.getElementById('learnMoreModal').style.display = 'flex';
     };
@@ -937,7 +945,7 @@ socket.on('tokenState', (data) => {
   const remaining = Math.max(0, Math.min(1, data.remaining));
   const locked = Math.max(0, Math.min(1, data.locked));
   const sold = Math.max(0, Math.min(1, data.sold));
-  // Calculate widths as percentages
+  
   const total = remaining + locked + sold || 1;
   const remPercent = (remaining / total) * 100;
   const lockPercent = (locked / total) * 100;
@@ -952,16 +960,15 @@ socket.on('tokenState', (data) => {
   document.getElementById('devHoldingsSoldLabel').textContent = `Sold: ${(sold*100).toFixed(0)}%`;
 });
 
-// Initialize bar to 100% remaining
+//Initialize bar to 100% remaining
 document.getElementById('devHoldingsRemaining').style.width = '100%';
 document.getElementById('devHoldingsLocked').style.width = '0%';
 document.getElementById('devHoldingsSold').style.width = '0%';
   </script>
   <footer>
     <p>
-       
       <a href="https://x.com/CrowdDot" target="_blank">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b7/X_logo.jpg" alt="X Logo" style="width: 30px; height: 30px; vertical-align: middle;" />
+        <img src="X_logo.png" alt="X Logo" class="x-logo-footer" style="width: 30px; height: 30px; vertical-align: middle;" />
       </a>
     </p>
     <p>&copy; 2025 CrowdDot. All rights reserved.</p>

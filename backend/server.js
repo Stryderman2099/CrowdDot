@@ -35,11 +35,48 @@ const levels = [
       { x: 120, y: 120, width: 260, height: 20 },  
       { x: 120, y: 120, width: 20, height: 260 },  
       { x: 180, y: 300, width: 160, height: 20 },  
-       
     ],
     greenCircle: { x: 320, y: 220, radius: 15 }, 
   },
-  // Level 3
+  // Level 3 
+
+  {
+    maze: [
+      { x: 80, y: 80, width: 340, height: 20 },
+      { x: 80, y: 80, width: 20, height: 340 },
+      { x: 80, y: 400, width: 200, height: 20 },
+      { x: 260, y: 200, width: 20, height: 220 },
+      { x: 260, y: 200, width: 120, height: 20 },
+    ],
+    greenCircle: { x: 175, y: 350, radius: 15 },
+  },
+  // Level 4 
+  {
+    maze: [
+      { x: 60, y: 60, width: 380, height: 20 },
+      
+      { x: 60, y: 420, width: 380, height: 20 },
+      { x: 60, y: 60, width: 20, height: 320 },
+      { x: 100, y: 100, width: 300, height: 20 },
+      { x: 380, y: 100, width: 20, height: 260 },
+      
+      { x: 150, y: 100, width: 20, height: 180 },
+    ],
+    greenCircle: { x: 250, y: 250, radius: 15 },
+  },
+  // Level 5 
+  {
+    maze: [
+      { x: 120, y: 120, width: 260, height: 20 },
+      { x: 120, y: 120, width: 20, height: 260 },
+      { x: 120, y: 360, width: 260, height: 20 },
+      { x: 360, y: 120, width: 20, height: 120 },
+      { x: 220, y: 220, width: 80, height: 20 },
+      { x: 220, y: 220, width: 20, height: 80 },
+    ],
+    greenCircle: { x: 175, y: 200, radius: 15 },
+  },
+  // Level 6
   {
     maze: [
       { x: 40, y: 0, width: 20, height: 300 },
@@ -53,7 +90,7 @@ const levels = [
     ],
     greenCircle: { x: 260, y: 320, radius: 15 },
   },
-  // Level 4
+  // Level 7
   {
     maze: [
       { x: 60, y: 60, width: 380, height: 20 },
@@ -68,7 +105,7 @@ const levels = [
     ],
     greenCircle: { x: 320, y: 320, radius: 15 },
   },
-  // Level 5
+  // Level 8
   {
     maze: [
       { x: 80, y: 80, width: 340, height: 20 },
@@ -83,7 +120,7 @@ const levels = [
     ],
     greenCircle: { x: 260, y: 260, radius: 15 },
   },
-  // Level 6
+  // Level 9
   {
     maze: [
       { x: 60, y: 60, width: 380, height: 20 },
@@ -100,7 +137,7 @@ const levels = [
     ],
     greenCircle: { x: 250, y: 250, radius: 15 },
   },
-  // Level 7
+  // Level 10
   {
     maze: [
       { x: 50, y: 50, width: 400, height: 20 },
@@ -122,7 +159,7 @@ const levels = [
     ],
     greenCircle: { x: 250, y: 250, radius: 15 },
   },
-  
+
 ];
 
 const users = {}; // Store usernames for connected users
@@ -206,10 +243,17 @@ io.on('connection', (socket) => {
     if (!users[socket.id]) return; // Ignore if the user hasn't set a username
 
     if (gameLocked) {
-      socket.emit('chatMessage', {
-        text: 'Please wait for the next level to start!',
-        color: 'orange',
-      });
+      if (devTokensRemainingPercent <= 0) {
+        socket.emit('chatMessage', {
+          text: '0 dev tokens remaining. Thanks for playing! Next game will be available in 2 weeks when tokens are unlocked.',
+          color: 'red',
+        });
+      } else {
+        socket.emit('chatMessage', {
+          text: 'Please wait for the next level to start!',
+          color: 'orange',
+        });
+      }
       return;
     }
 
@@ -267,7 +311,8 @@ io.on('connection', (socket) => {
     if (users[socket.id] && !collisionHandled) {
       devTokensRemainingPercent -= 0.05; // Reduce dev tokens by 5%
       devTokensSoldPercent += 0.05; // Increase dev tokens sold by 5%
-      console.log('Dev tokens percent:', devTokensRemainingPercent);
+      if (devTokensRemainingPercent < 0) devTokensRemainingPercent = 0; // Prevent negative
+      console.log('Dev tokens remaining percent:', devTokensRemainingPercent);
       console.log('Lose event triggered');
       console.log('Current level:', currentLevel);
       collisionHandled = true; //flag to true to prevent duplicate handling
@@ -283,6 +328,15 @@ io.on('connection', (socket) => {
 
       emitTokenState(); // Update the token state after collision
 
+      // Lock the game if no dev tokens remain
+      if (devTokensRemainingPercent <= 0) {
+        gameLocked = true;
+        io.emit('chatMessage', {
+          text: `All dev tokens have been sold or locked! The game is now locked.`,
+          color: 'red',
+        });
+      }
+
       // Reset the flag after a short delay to allow future collisions
       setTimeout(() => {
         collisionHandled = false;
@@ -295,6 +349,7 @@ io.on('connection', (socket) => {
     if (users[socket.id] && !winHandled) {
       devTokensRemainingPercent -= 0.1; // Reduce dev tokens by 10%
       devTokensLockedPercent += 0.1; // Increase dev tokens locked by 10%
+      if (devTokensRemainingPercent < 0) devTokensRemainingPercent = 0; // Prevent negative
       console.log('Win event triggered');
       console.log('Current level:', currentLevel);
       
@@ -306,6 +361,16 @@ io.on('connection', (socket) => {
       });
 
       emitTokenState(); // Update the token state after winning
+
+      // Lock the game if no dev tokens remain
+      if (devTokensRemainingPercent <= 0) {
+        io.emit('chatMessage', {
+          text: `All dev tokens have been sold or locked! The game is now locked.`,
+          color: 'red',
+        });
+        // Do not proceed to next level
+        return;
+      }
 
       setTimeout(() => {
         // Advance to next level or loop back to first
