@@ -59,6 +59,44 @@
       max-width: 600px;
     }
 
+    .hero-question {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: transparent;
+      background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #ffd93d);
+      background-size: 400% 400%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      animation: gradientShift 4s ease infinite, fadeInUp 1.2s ease-out, pulse 3s ease-in-out infinite;
+      text-shadow: 0 0 20px rgba(255, 107, 107, 0.3);
+      margin-bottom: 40px;
+      max-width: 700px;
+      line-height: 1.4;
+      letter-spacing: 0.5px;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+
     input {
       padding: 10px;
       font-size: 16px;
@@ -363,7 +401,7 @@
 </head>
 <body>
   <h1>Welcome to CrowdDot</h1>
-  <p>
+  <p class="hero-question">
     Can the community work together to reach the end?
   </p>
   <form id="introForm">
@@ -390,7 +428,7 @@
           <span style="color:#4327c0;font-weight:bold;">Live Market Data:</span> Provided by <a href="https://pumpportal.fun/" target="_blank" style="color:#e424d4;font-weight:bold;">Pump Portal API</a>.
         </li>
         <li style="margin-bottom:10px;">
-          <span style="color:#4327c0;font-weight:bold;">Dev Wallet:</span> Starts with 2 SOL (~5% supply). Hitting a <span style="color:#ff5858;font-weight:bold;">red wall</span> triggers a sale of 5% of the dev wallet.
+          <span style="color:#4327c0;font-weight:bold;">Dev Wallet:</span> Starts with 1.5 SOL (~5% supply). Hitting a <span style="color:#ff5858;font-weight:bold;">red wall</span> triggers a sale of 5% of the dev wallet.
         </li>
         <li style="margin-bottom:10px;">
           <span style="color:#4327c0;font-weight:bold;">Reach the green circle:</span> 10% of the dev wallet is <span style="color:#008f30;font-weight:bold;">locked</span> for 2 weeks via <a href="https://app.streamflow.finance/token-lock" target="_blank" style="color:#e424d4;font-weight:bold;">Streamflow</a>. A tweet with a screenshot and link is automatically posted for transparency.

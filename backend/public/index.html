@@ -523,6 +523,14 @@
       font-size: 0.9rem;
       color: #222;
       margin-left: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 25px 20px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      position: relative;
+      z-index: 1;
     }
     #devHoldingsBar {
       width: 100%;
@@ -533,6 +541,8 @@
       display: flex;
       overflow: hidden;
       margin-bottom: 8px;
+      position: relative;
+      z-index: 2;
     }
     #devHoldingsRemaining {
       height: 100%;
@@ -569,6 +579,8 @@
       margin-bottom: 10px;
       display: block;
       text-align: center;
+      position: relative;
+      z-index: 2;
     }
     #devHoldingsLabels {
       margin-top: 6px;
@@ -579,6 +591,8 @@
       width: 100%;
       font-family: 'Fira Mono', 'Consolas', monospace;
       text-shadow: 0 1px 6px #fff7, 0 1px 2px #0002;
+      position: relative;
+      z-index: 2;
     }
     #devHoldingsRemainingLabel {
       color: #1abc9c;
@@ -679,7 +693,7 @@
           <span style="color:#4327c0;font-weight:bold;">Live Market Data:</span> Provided by <a href="https://pumpportal.fun/" target="_blank" style="color:#e424d4;font-weight:bold;">Pump Portal API</a>.
         </li>
         <li style="margin-bottom:10px;">
-          <span style="color:#4327c0;font-weight:bold;">Dev Wallet:</span> Starts with 2 SOL (~5% supply). Hitting a <span style="color:#ff5858;font-weight:bold;">red wall</span> triggers a sale of 5% of the dev wallet.
+          <span style="color:#4327c0;font-weight:bold;">Dev Wallet:</span> Starts with 1.5 SOL (~5% supply). Hitting a <span style="color:#ff5858;font-weight:bold;">red wall</span> triggers a sale of 5% of the dev wallet.
         </li>
         <li style="margin-bottom:10px;">
           <span style="color:#4327c0;font-weight:bold;">Reach the green circle:</span> 10% of the dev wallet is <span style="color:#008f30;font-weight:bold;">locked</span> for 2 weeks via <a href="https://app.streamflow.finance/token-lock" target="_blank" style="color:#e424d4;font-weight:bold;">Streamflow</a>. A tweet with a screenshot and link is automatically posted for transparency.
