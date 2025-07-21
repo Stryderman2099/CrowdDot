@@ -68,5 +68,6 @@ Building CrowdDot opened up my skills in both backend and frontend web developme
 - Design and implement real-time multiplayer logic using WebSockets and Node.js (backend)
 - Create interactive, responsive user interfaces with modern HTML, CSS, and JavaScript (frontend)
 - Deploy and manage a full-stack application using cloud services like Render
+- Getting real time data from live cryptocurrency markets using Pumpfun's API
 
 This project was a valuable experience in bringing together all aspects of web development, from server logic to user experience and deployment.
